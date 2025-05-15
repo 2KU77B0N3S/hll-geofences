@@ -122,8 +122,8 @@ async function createEmbed() {
   const isAnyRunning = containers.some(c => c.status);
 
   const embed = new EmbedBuilder()
-    .setTitle('HLL Seeding Bot')
-    .setDescription('Midcap <50 Player | Lastcap <70 Player')
+    .setTitle('HLL Advanced Seeding')
+    .setDescription('Docker Control')
     .setColor(isAnyRunning ? 0x00FF00 : 0xFF0000)
     .setFooter({ text: `Server: ${SERVER_NAME}` })
     .setTimestamp();
