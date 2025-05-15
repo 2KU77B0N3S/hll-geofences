@@ -1,0 +1,26 @@
+name: hll-geofences-midcap
+services:
+  hll-geofences-midcap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hll-geofences-midcap
+    volumes:
+      - ./seeding.midcap.yml:/app/config.yml
+    environment:
+      - GO_ENV=production
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+  hll-geofences-lastcap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hll-geofences-lastcap
+    volumes:
+      - ./seeding.lastcap.yml:/app/config.yml
+    environment:
+      - GO_ENV=production
+    ports:
+      - "8084:8084"
+    restart: unless-stopped
