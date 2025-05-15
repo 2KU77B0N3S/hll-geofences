@@ -40,7 +40,7 @@ async function isDockerRunning() {
     ];
 
     for (const container of containers) {
-      const { stdout } = await execPromise(`docker ps -q -f name=${container.name}`);
+      const { stdout } = await execPromise(`docker ps -q -f name=^${container.name}$`);
       container.status = stdout.trim().length > 0;
     }
 
@@ -75,29 +75,36 @@ async function createEmbed() {
   return embed;
 }
 
-function createButtons() {
+function createButtons(containers) {
+  const midcapRunning = containers.find(c => c.service === 'hll-geofences-midcap').status;
+  const lastcapRunning = containers.find(c => c.service === 'hll-geofences-lastcap').status;
+
   return [
     new ActionRowBuilder()
       .addComponents(
         new ButtonBuilder()
           .setCustomId(START_MIDCAP_BUTTON_ID)
           .setLabel('START MIDCAP')
-          .setStyle(ButtonStyle.Success),
+          .setStyle(ButtonStyle.Success)
+          .setDisabled(midcapRunning),
         new ButtonBuilder()
           .setCustomId(STOP_MIDCAP_BUTTON_ID)
           .setLabel('STOP MIDCAP')
           .setStyle(ButtonStyle.Danger)
+          .setDisabled(!midcapRunning)
       ),
     new ActionRowBuilder()
       .addComponents(
         new ButtonBuilder()
           .setCustomId(START_LASTCAP_BUTTON_ID)
           .setLabel('START LASTCAP')
-          .setStyle(ButtonStyle.Success),
+          .setStyle(ButtonStyle.Success)
+          .setDisabled(lastcapRunning),
         new ButtonBuilder()
           .setCustomId(STOP_LASTCAP_BUTTON_ID)
           .setLabel('STOP LASTCAP')
           .setStyle(ButtonStyle.Danger)
+          .setDisabled(!lastcapRunning)
       )
   ];
 }
@@ -116,7 +123,8 @@ async function clearChannel(channel) {
 async function updateEmbedInChannel(channel) {
   try {
     const embed = await createEmbed();
-    const buttons = createButtons();
+    const containers = await isDockerRunning();
+    const buttons = createButtons(containers);
     const messages = await channel.messages.fetch({ limit: 1 });
     const message = messages.first();
 
@@ -136,17 +144,24 @@ async function updateEmbed(channels) {
   }
 }
 
-async function executeDockerCommand(service, command, interaction) {
+async function executeDockerCommand(service, action, interaction) {
   try {
     if (!interaction.deferred && !interaction.replied) {
       await interaction.deferReply({ ephemeral: true });
     }
 
     const projectName = 'hll-geofences-midcap';
-    const { stdout, stderr } = await execPromise(
-      `cd ${projectDir} && docker compose -p ${projectName} ${command} ${service}`
-    );
-    const output = stdout || stderr || "No output";
+    let command;
+    if (action === 'start') {
+      command = `cd ${projectDir} && docker compose -p ${projectName} up -d ${service}`;
+    } else if (action === 'stop') {
+      command = `cd ${projectDir} && docker compose -p ${projectName} stop ${service}`;
+    } else {
+      throw new Error('Invalid action');
+    }
+
+    const { stdout, stderr } = await execPromise(command);
+    const output = stdout || stderr || 'No output';
 
     await interaction.editReply({
       content: `Command executed successfully for ${service}:\n\`\`\`\n${output.trim()}\n\`\`\``
@@ -158,35 +173,24 @@ async function executeDockerCommand(service, command, interaction) {
       if (channel2) channels.push(channel2);
     }
     await updateEmbed(channels);
-
   } catch (error) {
     console.error(`Error executing command for ${service}: ${error.message}`);
-
     if (!interaction.deferred && !interaction.replied) {
-      try {
-        await interaction.deferReply({ ephemeral: true });
-      } catch (ackError) {
-        console.error(`Failed to defer interaction: ${ackError.message}`);
-      }
+      await interaction.deferReply({ ephemeral: true });
     }
-
-    try {
-      await interaction.editReply({
-        content: `Error executing command for ${service}: ${error.message}`
-      });
-    } catch (editError) {
-      console.error(`Failed to edit reply: ${editError.message}`);
-    }
+    await interaction.editReply({
+      content: `Error executing command for ${service}: ${error.message}`
+    });
   }
 }
 
 client.once('ready', async () => {
   console.log(`Bot started for ${SERVER_NAME}`);
-  
+
   const channels = [];
   const channel1 = await client.channels.fetch(CHANNEL_ID);
   if (channel1) channels.push(channel1);
-  
+
   if (CHANNEL_ID_2) {
     try {
       const channel2 = await client.channels.fetch(CHANNEL_ID_2);
