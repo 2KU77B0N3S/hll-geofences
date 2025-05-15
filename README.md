@@ -103,7 +103,7 @@ To manage Docker instances via Discord, set up the JavaScript-based Discord bot.
 - Ensure `.env`, `seeding.midcap.yml`, and `seeding.lastcap.yml` are correctly configured before starting.
 - Run `docker compose build` after modifying any configuration files or Docker-related files to apply changes.
 - The Discord bot is optional and can be skipped if not needed.
-- For persistent script execution, consider using a process manager like PM2 (see the [original README](https://github.com/2KU77B0N3S/hll-geofences/blob/main/README.md) for PM2 setup instructions).
+- For persistent script execution, consider using a process manager like PM2
 
 ## Managing Docker Instances
 
