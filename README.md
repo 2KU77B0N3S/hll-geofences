@@ -1,4 +1,4 @@
-# HLL Geofences
+# HLL Geofences for Advanced Seeding
 
 This repository provides scripts for managing seeding configurations for Hell Let Loose (HLL) servers using geofencing. It supports two configurations: **Midcap Seeding** (midcap-only gameplay) and **Last Cap Seeding** (last capture point blocked). The scripts can be deployed using Docker and optionally controlled via a Discord bot.
 
@@ -8,6 +8,9 @@ This repository provides scripts for managing seeding configurations for Hell Le
 - Docker-based deployment for easy setup and management.
 - Optional Discord bot integration for remote control.
 - Supports both midcap and last cap seeding configurations.
+
+![Discord Docker Control](screenshot1.png)
+![Advanced Seeding](screenshot2.png)
 
 ## Prerequisites
 
