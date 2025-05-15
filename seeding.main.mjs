@@ -290,12 +290,12 @@ client.once('ready', async () => {
   // Periodic embed update
   setInterval(async () => {
     await updateEmbed(channels);
-  }, 60000);
+  }, 30000);
 
   // Periodic log check
   setInterval(async () => {
     await sendPeriodicLogs();
-  }, 60000);
+  }, 30000);
 });
 
 client.on('interactionCreate', async (interaction) => {
