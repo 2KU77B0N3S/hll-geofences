@@ -129,6 +129,19 @@ To manage Docker instances via Discord, set up the JavaScript-based Discord bot.
    ```bash
    node seeding.main.mjs
    ```
+## Restart Script
+The `restart.sh` script manages the `hll-geofences-midcap` and `hll-geofences-lastcap` containers defined in `docker-compose.yml`.
+
+### Usage
+```bash
+chmod +x restart.sh
+./restart.sh restart
+```
+Commands
+- start: Start both containers.
+- stop: Stop both containers.
+- restart: Restart both containers.
+- Logs are saved to restart-containers.log in the root directory.
 
 ## Notes
 
