@@ -1,27 +1,34 @@
 # HLL Geofences for Advanced Seeding
 
-This repository provides scripts for managing seeding configurations for Hell Let Loose (HLL) servers using geofencing. It supports two configurations: **Midcap Seeding** (midcap-only gameplay) and **Last Cap Seeding** (last two enemy lines blocked). The scripts can be deployed using Docker and optionally controlled via a Discord bot.
+This repository provides robust scripts for managing geofencing-based seeding configurations on Hell Let Loose (HLL) servers. It supports two distinct seeding modes:
+
+- **Midcap Seeding**: Restricts gameplay to midcap objectives.
+- **Last Cap Seeding**: Blocks the last two enemy lines to encourage seeding.
+
+The solution leverages Docker for streamlined deployment and includes optional Discord bot integration for remote management, making it ideal for server administrators seeking efficient, scalable seeding control.
 
 ## Features
 
-- Configurable player count thresholds for geofencing.
-- Docker-based deployment for easy setup and management.
-- Optional Discord bot integration for remote control.
-- Supports both midcap and last cap seeding configurations.
+- **Dynamic Geofencing**: Configurable player count thresholds to trigger geofencing rules.
+- **Dockerized Deployment**: Simplifies setup and ensures consistent runtime environments.
+- **Discord Bot Integration**: Optional remote control via Discord for real-time management.
+- **Dual Configuration Support**: Seamlessly switch between midcap and last cap seeding modes.
 
 ![Discord Docker Control](screenshot1.png)
 ![Advanced Seeding](screenshot2.png)
 
 ## Prerequisites
 
-- Git
-- Docker (for deployment)
-- Node.js and npm (for Discord bot)
-- Access to HLL server RCON (IP, port, password)
+Ensure the following are installed and configured:
+
+- **Git**: For cloning the repository.
+- **Docker**: For containerized deployment.
+- **Node.js and npm**: Required for the optional Discord bot.
+- **HLL Server RCON Access**: Requires server IP, RCON port, and password.
 
 ## Express Installation
 
-For a quick setup that skips manual configuration of most files, you can use the provided installation script. This method bypasses all configuration steps up to the optional Discord bot setup, but it is recommended to review the `.env` file to customize the warning and punish messages.
+The express installation script automates setup, minimizing manual configuration. It’s recommended to review the `.env` file post-installation to customize warning/punishment messages or Discord settings.
 
 1. **Clone the Repository**:
    ```bash
@@ -29,31 +36,28 @@ For a quick setup that skips manual configuration of most files, you can use the
    cd hll-geofences
    ```
 
-2. **Run the Installation Script**:
-   - Execute the installation script from the root directory:
-     ```bash
-     bash install_hll_geofences.sh
-     ```
-   - The script automatically handles the setup of environment files, Docker configuration, and default seeding configurations.
+2. **Execute Installation Script**:
+   ```bash
+   bash install_hll_geofences.sh
+   ```
+   This script configures environment files, Docker settings, and default seeding parameters.
 
-3. **Check the `.env` File**:
-   - Open the `.env` file in the root directory using a text editor (e.g., `vi` or `nano`):
-     ```bash
-     nano .env
-     ```
-   - Verify and customize the warning and punish messages as needed. Ensure other required parameters (e.g., Discord bot token, channel ID) are set if you plan to use the Discord bot.
+3. **Review `.env` File**:
+   ```bash
+   nano .env
+   ```
+   Customize warning/punishment messages and verify Discord bot parameters (e.g., token, channel ID) if applicable.
 
-4. **Start Docker Container**:
-   - Start the container in detached mode:
-     ```bash
-     docker compose up -d
-     ```
+4. **Launch Docker Container**:
+   ```bash
+   docker compose up -d
+   ```
 
-**Note**: After running the script, you can proceed to the [Optional: Discord Bot Setup](#optional-discord-bot-setup) section if you want to enable Discord bot control. Ensure you review the `.env`, `seeding.midcap.yml`, and `seeding.lastcap.yml` files if you need to adjust server-specific settings (e.g., `SERVER-IP`, `RCON-PORT`, `RCON-PW`) later.
+> **Post-Installation**: Proceed to the [Optional: Discord Bot Setup](#optional-discord-bot-setup) section for bot configuration. Adjust `seeding.midcap.yml` and `seeding.lastcap.yml` for server-specific settings (e.g., `SERVER-IP`, `RCON-PORT`, `RCON-PW`) as needed.
 
-## Installation
+## Manual Installation
 
-Follow these steps to set up the HLL geofencing scripts.
+For granular control, follow these steps to configure the geofencing scripts manually.
 
 1. **Clone the Repository**:
    ```bash
@@ -62,109 +66,100 @@ Follow these steps to set up the HLL geofencing scripts.
    ```
 
 2. **Configure Environment File**:
-   - Rename the example environment file:
-     ```bash
-     mv seeding.example.env .env
-     ```
-   - Edit `.env` using a text editor (e.g., `vi` or `nano`) and fill in the required parameters (e.g., Discord bot token, channel ID).
+   ```bash
+   mv seeding.example.env .env
+   nano .env
+   ```
+   Populate required fields, including Discord bot token and channel ID (if used).
 
-3. **Set Up Docker**:
-   - Rename the Docker configuration file:
-     ```bash
-     mv seeding.docker-compose.yml docker-compose.yml
-     ```
+3. **Set Up Docker Configuration**:
+   ```bash
+   mv seeding.docker-compose.yml docker-compose.yml
+   ```
 
 4. **Configure Midcap Seeding**:
-   - Edit the midcap configuration file:
-     ```bash
-     vi seeding.midcap.yml
-     ```
-     or
-     ```bash
-     nano seeding.midcap.yml
-     ```
-   - Fill in `SERVER-IP`, `RCON-PORT`, and `RCON-PW`.
-   - Optional: Adjust the "player less than" threshold to set the desired player count for geofencing.
+   ```bash
+   nano seeding.midcap.yml
+   ```
+   Specify `SERVER-IP`, `RCON-PORT`, `RCON-PW`, and optionally adjust the player count threshold for geofencing.
 
 5. **Configure Last Cap Seeding**:
-   - Edit the last cap configuration file:
-     ```bash
-     vi seeding.lastcap.yml
-     ```
-     or
-     ```bash
-     nano seeding.lastcap.yml
-     ```
-   - Fill in `SERVER-IP`, `RCON-PORT`, and `RCON-PW`.
-   - Optional: Adjust the "player less than" threshold to set the desired player count for geofencing.
+   ```bash
+   nano seeding.lastcap.yml
+   ```
+   Provide `SERVER-IP`, `RCON-PORT`, `RCON-PW`, and customize the player threshold as needed.
 
 6. **Build Docker Image**:
-   - Build the Docker image (required after any file changes):
-     ```bash
-     docker compose build
-     ```
+   ```bash
+   docker compose build
+   ```
+   Rebuild after any configuration changes to ensure consistency.
 
 7. **Start Docker Container**:
-   - Start the container in detached mode:
-     ```bash
-     docker compose up -d
-     ```
+   ```bash
+   docker compose up -d
+   ```
 
-8. **Stop Docker Container** (when needed):
+8. **Stop Docker Container** (if required):
    ```bash
    docker compose down
    ```
 
 ## Optional: Discord Bot Setup
 
-To manage Docker instances via Discord, set up the JavaScript-based Discord bot.
+Enable remote management by configuring the JavaScript-based Discord bot.
 
 1. **Install Dependencies**:
-   In the root directory, run:
    ```bash
    npm install
    ```
 
-2. **Start the Discord Bot**:
+2. **Launch Discord Bot**:
    ```bash
    node seeding.main.mjs
    ```
+
+> **Tip**: Use a process manager like PM2 for persistent bot execution in production environments.
+
 ## Restart Script
-The `restart.sh` script manages the `hll-geofences-midcap` and `hll-geofences-lastcap` containers defined in `docker-compose.yml`.
+
+The `restart.sh` script simplifies management of `hll-geofences-midcap` and `hll-geofences-lastcap` containers defined in `docker-compose.yml`.
 
 ### Usage
 ```bash
 chmod +x restart.sh
 ./restart.sh restart
 ```
-Commands
-- start: Start both containers.
-- stop: Stop both containers.
-- restart: Restart both containers.
-- Logs are saved to restart-containers.log in the root directory.
 
-## Notes
+### Commands
+- `start`: Launches both containers.
+- `stop`: Halts both containers.
+- `restart`: Restarts both containers.
 
-- Ensure `.env`, `seeding.midcap.yml`, and `seeding.lastcap.yml` are correctly configured before starting.
-- Run `docker compose build` after modifying any configuration files or Docker-related files to apply changes.
-- The Discord bot is optional and can be skipped if not needed.
-- For persistent script execution, consider using a process manager like PM2
+Logs are written to `restart-containers.log` in the root directory for troubleshooting.
+
+## Operational Notes
+
+- **Configuration Verification**: Always validate `.env`, `seeding.midcap.yml`, and `seeding.lastcap.yml` before launching containers.
+- **Docker Rebuild**: Run `docker compose build` after modifying configuration or Docker files to apply changes.
+- **Discord Bot**: Optional and can be omitted if remote control is unnecessary.
+- **Persistence**: Consider PM2 or similar for long-running scripts in production.
 
 ## Managing Docker Instances
 
 - **Check Container Status**:
-  ```bash
-  docker ps
-  ```
+   ```bash
+   docker ps
+   ```
 - **View Logs**:
-  ```bash
-  docker compose logs
-  ```
-- **Restart Container**:
-  ```bash
-  docker compose restart
-  ```
+   ```bash
+   docker compose logs
+   ```
+- **Restart Containers**:
+   ```bash
+   docker compose restart
+   ```
 
 ## Contributing
 
-For issues, feature requests, or contributions, please open an issue or submit a pull request on the [GitHub repository](https://github.com/2KU77B0N3S/hll-geofences).
+Contributions are welcome! Submit issues, feature requests, or pull requests via the [GitHub repository](https://github.com/2KU77B0N3S/hll-geofences).
