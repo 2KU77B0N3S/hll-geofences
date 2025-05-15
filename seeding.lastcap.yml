@@ -1,6 +1,6 @@
 Servers:
     - Host: 1.1.1.1 #GAMESERVER IP
-      Port: 1234 #RCON PORT
+      Port: 123456 #RCON PORT
       Password: abcdef # RCON PASSWORD
       PunishAfterSeconds: 10
       AxisFence:
