@@ -19,6 +19,38 @@ This repository provides scripts for managing seeding configurations for Hell Le
 - Node.js and npm (for Discord bot)
 - Access to HLL server RCON (IP, port, password)
 
+## Express Installation
+
+For a quick setup that skips manual configuration of most files, you can use the provided installation script. This method bypasses all configuration steps up to the optional Discord bot setup, but it is recommended to review the `.env` file to customize the warning and punish messages.
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/2KU77B0N3S/hll-geofences
+   cd hll-geofences
+   ```
+
+2. **Run the Installation Script**:
+   - Execute the installation script from the root directory:
+     ```bash
+     bash install_hll_geofences.sh
+     ```
+   - The script automatically handles the setup of environment files, Docker configuration, and default seeding configurations.
+
+3. **Check the `.env` File**:
+   - Open the `.env` file in the root directory using a text editor (e.g., `vi` or `nano`):
+     ```bash
+     nano .env
+     ```
+   - Verify and customize the warning and punish messages as needed. Ensure other required parameters (e.g., Discord bot token, channel ID) are set if you plan to use the Discord bot.
+
+4. **Start Docker Container**:
+   - Start the container in detached mode:
+     ```bash
+     docker compose up -d
+     ```
+
+**Note**: After running the script, you can proceed to the [Optional: Discord Bot Setup](#optional-discord-bot-setup) section if you want to enable Discord bot control. Ensure you review the `.env`, `seeding.midcap.yml`, and `seeding.lastcap.yml` files if you need to adjust server-specific settings (e.g., `SERVER-IP`, `RCON-PORT`, `RCON-PW`) later.
+
 ## Installation
 
 Follow these steps to set up the HLL geofencing scripts.
