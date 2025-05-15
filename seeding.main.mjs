@@ -1,9 +1,10 @@
-import { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, WebhookClient } from 'discord.js';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 
 dotenv.config();
 const execPromise = promisify(exec);
@@ -12,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectDir = __dirname;
 
-const { DISCORD_TOKEN, CHANNEL_ID, CHANNEL_ID_2, SERVER_NAME } = process.env;
+const { DISCORD_TOKEN, CHANNEL_ID, CHANNEL_ID_2, SERVER_NAME, DISCORD_WEBHOOK } = process.env;
 
 if (!DISCORD_TOKEN || !CHANNEL_ID || !SERVER_NAME) {
   throw new Error('Missing required environment variables');
@@ -24,6 +25,12 @@ const STOP_MIDCAP_BUTTON_ID = `stop-midcap-${locationPrefix}`;
 const START_LASTCAP_BUTTON_ID = `start-lastcap-${locationPrefix}`;
 const STOP_LASTCAP_BUTTON_ID = `stop-lastcap-${locationPrefix}`;
 
+// Track last log hash to detect new logs
+const lastLogHashes = {
+  'hll-geofences-midcap': '',
+  'hll-geofences-lastcap': ''
+};
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -31,6 +38,15 @@ const client = new Client({
     GatewayIntentBits.GuildMessageReactions
   ]
 });
+
+let webhookClient;
+if (DISCORD_WEBHOOK) {
+  try {
+    webhookClient = new WebhookClient({ url: DISCORD_WEBHOOK });
+  } catch (error) {
+    console.error(`Error initializing webhook client: ${error.message}`);
+  }
+}
 
 async function isDockerRunning() {
   try {
@@ -54,13 +70,60 @@ async function isDockerRunning() {
   }
 }
 
+async function fetchNewLogs(service) {
+  try {
+    const { stdout } = await execPromise(`cd ${projectDir} && docker compose -p hll-geofences-midcap logs --since=1m ${service}`);
+    const logs = stdout || 'No new logs available';
+    
+    // Calculate hash of logs to detect changes
+    const logHash = crypto.createHash('md5').update(logs).digest('hex');
+    
+    if (logHash === lastLogHashes[service] || logs === 'No new logs available') {
+      return null; // No new logs
+    }
+    
+    lastLogHashes[service] = logHash;
+    
+    // Truncate logs to fit Discord's 2000-character limit
+    if (logs.length > 1900) {
+      return logs.slice(0, 1900) + '... (truncated)';
+    }
+    
+    return logs;
+  } catch (error) {
+    console.error(`Error fetching logs for ${service}: ${error.message}`);
+    return `Error fetching logs for ${service}: ${error.message}`;
+  }
+}
+
+async function sendPeriodicLogs() {
+  if (!webhookClient) return;
+
+  const containers = await isDockerRunning();
+  for (const container of containers) {
+    if (container.status) {
+      const logs = await fetchNewLogs(container.service);
+      if (logs) {
+        try {
+          await webhookClient.send({
+            content: `New logs for ${container.service}:\n\`\`\`\n${logs}\n\`\`\``,
+            username: `${SERVER_NAME} Seeding Bot`
+          });
+        } catch (error) {
+          console.error(`Error sending logs to webhook for ${container.service}: ${error.message}`);
+        }
+      }
+    }
+  }
+}
+
 async function createEmbed() {
   const containers = await isDockerRunning();
   const isAnyRunning = containers.some(c => c.status);
 
   const embed = new EmbedBuilder()
-    .setTitle('Extended Seeding')
-    .setDescription('The last two lines are blocked')
+    .setTitle('HLL Seeding Bot')
+    .setDescription('Midcap <50 Player | Lastcap <70 Player')
     .setColor(isAnyRunning ? 0x00FF00 : 0xFF0000)
     .setFooter({ text: `Server: ${SERVER_NAME}` })
     .setTimestamp();
@@ -163,6 +226,25 @@ async function executeDockerCommand(service, action, interaction) {
     const { stdout, stderr } = await execPromise(command);
     const output = stdout || stderr || 'No output';
 
+    // Fetch Docker Compose logs if webhook is configured
+    if (webhookClient) {
+      try {
+        const logs = await fetchNewLogs(service);
+        if (logs) {
+          await webhookClient.send({
+            content: `Logs for ${service} (${action}):\n\`\`\`\n${logs}\n\`\`\``,
+            username: `${SERVER_NAME} Seeding Bot`
+          });
+        }
+      } catch (logsError) {
+        console.error(`Error fetching logs for ${service}: ${logsError.message}`);
+        await webhookClient.send({
+          content: `Error fetching logs for ${service} (${action}): ${logsError.message}`,
+          username: `${SERVER_NAME} Seeding Bot`
+        });
+      }
+    }
+
     await interaction.editReply({
       content: `Command executed successfully for ${service}:\n\`\`\`\n${output.trim()}\n\`\`\``
     });
@@ -205,8 +287,14 @@ client.once('ready', async () => {
     await updateEmbedInChannel(channel);
   }
 
+  // Periodic embed update
   setInterval(async () => {
     await updateEmbed(channels);
+  }, 60000);
+
+  // Periodic log check
+  setInterval(async () => {
+    await sendPeriodicLogs();
   }, 60000);
 });
 
