@@ -80,24 +80,36 @@ type Server struct {
 	Messages           *Messages `yaml:"Messages,omitempty"`
 }
 
-func (s Server) WarningMessage() string {
+func (s Server) WarningMessage(punishAfterSeconds string) string {
+	var message string
 	if warning := os.Getenv("WARNING_MESSAGE"); warning != "" {
-		return warning
+		message = warning
+	} else if s.Messages == nil || s.Messages.Warning == nil {
+		message = "You are outside of the designated play area! Please go back to the battlefield immediately.\n\nYou will be punished in %s"
+	} else {
+		message = *s.Messages.Warning
 	}
-	if s.Messages == nil || s.Messages.Warning == nil {
-		return "You are outside of the designated play area! Please go back to the battlefield immediately.\n\nYou will be punished in %s"
+
+	if strings.Contains(message, "%s") {
+		return fmt.Sprintf(message, punishAfterSeconds)
 	}
-	return *s.Messages.Warning
+	return message
 }
 
-func (s Server) PunishMessage() string {
+func (s Server) PunishMessage(punishAfterSeconds string) string {
+	var message string
 	if punish := os.Getenv("PUNISH_MESSAGE"); punish != "" {
-		return punish
+		message = punish
+	} else if s.Messages == nil || s.Messages.Punish == nil {
+		message = "%s outside the play area"
+	} else {
+		message = *s.Messages.Punish
 	}
-	if s.Messages == nil || s.Messages.Punish == nil {
-		return "%s outside the play area"
+
+	if strings.Contains(message, "%s") {
+		return fmt.Sprintf(message, punishAfterSeconds)
 	}
-	return *s.Messages.Punish
+	return message
 }
 
 type Messages struct {
