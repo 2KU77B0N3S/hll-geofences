@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"slices"
 	"time"
@@ -24,14 +25,20 @@ type Worker struct {
 	punishTicker       *time.Ticker
 	current            *api.GetSessionResponse
 	outsidePlayers     sync.Map[string, outsidePlayer]
-	firstCoord         sync.Map[string, *api.WorldPosition]
+	firstCoord         sync.Map[string, *firstCoordData]
 	restartCh          chan struct{}
+	startTime          time.Time // Track Worker startup time
 }
 
 type outsidePlayer struct {
 	Name         string
 	LastGrid     api.Grid
 	FirstOutside time.Time
+}
+
+type firstCoordData struct {
+	Position *api.WorldPosition
+	StoredAt time.Time
 }
 
 var alliedTeams = []api.PlayerTeam{
@@ -64,8 +71,9 @@ func NewWorker(l *slog.Logger, pool *rconv2.ConnectionPool, c data.Server) *Work
 		playerTicker:       time.NewTicker(500 * time.Millisecond),
 		punishTicker:       time.NewTicker(time.Second),
 		outsidePlayers:     sync.Map[string, outsidePlayer]{},
-		firstCoord:         sync.Map[string, *api.WorldPosition]{},
+		firstCoord:         sync.Map[string, *firstCoordData]{},
 		restartCh:          make(chan struct{}),
+		startTime:          time.Now(), // Record startup time
 	}
 }
 
@@ -84,6 +92,17 @@ func (w *Worker) Run(ctx context.Context) {
 	go w.punishPlayers(ctx)
 }
 
+func (w *Worker) clearSyncMaps() {
+	w.outsidePlayers.Range(func(id string, _ outsidePlayer) bool {
+		w.outsidePlayers.Delete(id)
+		return true
+	})
+	w.firstCoord.Range(func(id string, _ *firstCoordData) bool {
+		w.firstCoord.Delete(id)
+		return true
+	})
+}
+
 func (w *Worker) populateSession(ctx context.Context) error {
 	return w.pool.WithConnection(ctx, func(c *rconv2.Connection) error {
 		si, err := c.SessionInfo(ctx)
@@ -92,6 +111,7 @@ func (w *Worker) populateSession(ctx context.Context) error {
 		}
 		if w.current != nil && w.current.MapName != si.MapName {
 			w.l.Info("map-changed", "old_map", w.current.MapName, "new_map", si.MapName)
+			w.clearSyncMaps()
 			select {
 			case w.restartCh <- struct{}{}:
 				w.l.Info("signaled-restart-on-map-change")
@@ -124,9 +144,7 @@ func (w *Worker) punishPlayers(ctx context.Context) {
 }
 
 func (w *Worker) punishPlayer(ctx context.Context, id string, o outsidePlayer) {
-	// Use the punish message directly without formatting
 	message := w.c.PunishMessage()
-	// Log the message for debugging
 	w.l.Debug("punish-message-final", "message", message)
 
 	err := w.pool.WithConnection(ctx, func(c *rconv2.Connection) error {
@@ -140,6 +158,7 @@ func (w *Worker) punishPlayer(ctx context.Context, id string, o outsidePlayer) {
 
 	time.Sleep(5 * time.Second)
 	w.outsidePlayers.Delete(id)
+	w.l.Debug("punish-player-removed", "player_id", id)
 }
 
 func (w *Worker) pollSession(ctx context.Context) {
@@ -163,6 +182,11 @@ func (w *Worker) pollPlayers(ctx context.Context) {
 			w.playerTicker.Stop()
 			return
 		case <-w.playerTicker.C:
+			// Skip player checks for 5 seconds after Worker startup
+			if time.Since(w.startTime) < 5*time.Second {
+				w.l.Debug("skipping-player-poll-post-startup")
+				continue
+			}
 			if len(w.alliesFences) == 0 && len(w.axisFences) == 0 {
 				continue
 			}
@@ -175,7 +199,7 @@ func (w *Worker) pollPlayers(ctx context.Context) {
 				for _, player := range players.Players {
 					go w.checkPlayer(ctx, player)
 				}
-				w.firstCoord.Range(func(id string, p *api.WorldPosition) bool {
+				w.firstCoord.Range(func(id string, p *firstCoordData) bool {
 					for _, player := range players.Players {
 						if player.Id == id {
 							return true
@@ -194,18 +218,31 @@ func (w *Worker) pollPlayers(ctx context.Context) {
 }
 
 func (w *Worker) checkPlayer(ctx context.Context, p api.GetPlayerResponse) {
+	// Skip whitelisted players
+	if slices.Contains(w.c.GetWhitelist(), p.Id) {
+		w.outsidePlayers.Delete(p.Id)
+		w.firstCoord.Delete(p.Id)
+		return
+	}
+
 	if !p.Position.IsSpawned() {
-		w.firstCoord.Store(p.Id, nil)
+		w.l.Debug("player-not-spawned", "player_id", p.Id, "player_name", p.Name)
+		w.firstCoord.Store(p.Id, &firstCoordData{Position: nil, StoredAt: time.Now()})
 		return
 	}
 
 	if fp, ok := w.firstCoord.Load(p.Id); !ok {
-		w.firstCoord.Store(p.Id, &p.Position)
+		w.l.Debug("storing-first-coord", "player_id", p.Id, "player_name", p.Name, "position", fmt.Sprintf("%v", p.Position))
+		w.firstCoord.Store(p.Id, &firstCoordData{Position: &p.Position, StoredAt: time.Now()})
 		return
-	} else if fp != nil && p.Position.Equal(*fp) {
+	} else if fp.Position != nil && (time.Since(fp.StoredAt) < 2*time.Second || p.Position.Equal(*fp.Position)) {
+		w.l.Debug("skipping-first-coord", "player_id", p.Id, "player_name", p.Name, "position", fmt.Sprintf("%v", p.Position), "stored_at", fp.StoredAt, "duration", time.Since(fp.StoredAt))
 		return
 	} else {
-		w.firstCoord.Store(p.Id, nil)
+		if fp.Position != nil {
+			w.l.Debug("clearing-first-coord", "player_id", p.Id, "player_name", p.Name, "new_position", fmt.Sprintf("%v", p.Position), "old_position", fmt.Sprintf("%v", *fp.Position))
+		}
+		w.firstCoord.Store(p.Id, &firstCoordData{Position: nil, StoredAt: time.Now()})
 	}
 
 	var fences []data.Fence
@@ -234,9 +271,7 @@ func (w *Worker) checkPlayer(ctx context.Context, p api.GetPlayerResponse) {
 	w.outsidePlayers.Store(p.Id, outsidePlayer{FirstOutside: time.Now(), Name: p.Name, LastGrid: g})
 	w.l.Info("player-outside-fence", "player", p.Name, "grid", g)
 
-	// Use the warning message directly without formatting
 	message := w.c.WarningMessage()
-	// Log the message for debugging
 	w.l.Debug("warning-message-final", "message", message)
 
 	err := w.pool.WithConnection(ctx, func(c *rconv2.Connection) error {
