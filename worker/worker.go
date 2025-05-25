@@ -2,7 +2,6 @@ package worker
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"slices"
 	"time"
@@ -23,22 +22,18 @@ type Worker struct {
 	sessionTicker      *time.Ticker
 	playerTicker       *time.Ticker
 	punishTicker       *time.Ticker
+	inactivityTicker   *time.Ticker // Added: Ticker for inactivity check
+	lastMapChange      time.Time    // Added: Timestamp of last map change/restart
 	current            *api.GetSessionResponse
 	outsidePlayers     sync.Map[string, outsidePlayer]
-	firstCoord         sync.Map[string, *firstCoordData]
+	firstCoord         sync.Map[string, *api.WorldPosition]
 	restartCh          chan struct{}
-	startTime          time.Time // Track Worker startup time
 }
 
 type outsidePlayer struct {
 	Name         string
 	LastGrid     api.Grid
 	FirstOutside time.Time
-}
-
-type firstCoordData struct {
-	Position *api.WorldPosition
-	StoredAt time.Time
 }
 
 var alliedTeams = []api.PlayerTeam{
@@ -70,10 +65,11 @@ func NewWorker(l *slog.Logger, pool *rconv2.ConnectionPool, c data.Server) *Work
 		sessionTicker:      time.NewTicker(1 * time.Second),
 		playerTicker:       time.NewTicker(500 * time.Millisecond),
 		punishTicker:       time.NewTicker(time.Second),
+		inactivityTicker:   time.NewTicker(2 * time.Hour), // Added: 2-hour ticker
+		lastMapChange:      time.Now(),                    // Added: Initialize with current time
 		outsidePlayers:     sync.Map[string, outsidePlayer]{},
-		firstCoord:         sync.Map[string, *firstCoordData]{},
+		firstCoord:         sync.Map[string, *api.WorldPosition]{},
 		restartCh:          make(chan struct{}),
-		startTime:          time.Now(), // Record startup time
 	}
 }
 
@@ -90,17 +86,7 @@ func (w *Worker) Run(ctx context.Context) {
 	go w.pollSession(ctx)
 	go w.pollPlayers(ctx)
 	go w.punishPlayers(ctx)
-}
-
-func (w *Worker) clearSyncMaps() {
-	w.outsidePlayers.Range(func(id string, _ outsidePlayer) bool {
-		w.outsidePlayers.Delete(id)
-		return true
-	})
-	w.firstCoord.Range(func(id string, _ *firstCoordData) bool {
-		w.firstCoord.Delete(id)
-		return true
-	})
+	go w.checkInactivity(ctx) // Added: Start inactivity check
 }
 
 func (w *Worker) populateSession(ctx context.Context) error {
@@ -111,7 +97,7 @@ func (w *Worker) populateSession(ctx context.Context) error {
 		}
 		if w.current != nil && w.current.MapName != si.MapName {
 			w.l.Info("map-changed", "old_map", w.current.MapName, "new_map", si.MapName)
-			w.clearSyncMaps()
+			w.lastMapChange = time.Now() // Added: Update timestamp on map change
 			select {
 			case w.restartCh <- struct{}{}:
 				w.l.Info("signaled-restart-on-map-change")
@@ -124,6 +110,40 @@ func (w *Worker) populateSession(ctx context.Context) error {
 		w.alliesFences = w.applicableFences(w.c.AlliesFence)
 		return nil
 	})
+}
+
+// Added: Check for inactivity
+func (w *Worker) checkInactivity(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			w.inactivityTicker.Stop()
+			return
+		case <-w.inactivityTicker.C:
+			if time.Since(w.lastMapChange) >= 2*time.Hour {
+				err := w.pool.WithConnection(ctx, func(c *rconv2.Connection) error {
+					players, err := c.Players(ctx)
+					if err != nil {
+						return err
+					}
+					if len(players.Players) == 0 { // No players present
+						w.l.Info("no-players-inactivity-restart")
+						select {
+						case w.restartCh <- struct{}{}:
+							w.l.Info("signaled-restart-on-inactivity")
+							w.lastMapChange = time.Now() // Update timestamp after restart
+						default:
+							w.l.Warn("restart-channel-full")
+						}
+					}
+					return nil
+				})
+				if err != nil {
+					w.l.Error("check-inactivity", "error", err)
+				}
+			}
+		}
+	}
 }
 
 func (w *Worker) punishPlayers(ctx context.Context) {
@@ -158,7 +178,6 @@ func (w *Worker) punishPlayer(ctx context.Context, id string, o outsidePlayer) {
 
 	time.Sleep(5 * time.Second)
 	w.outsidePlayers.Delete(id)
-	w.l.Debug("punish-player-removed", "player_id", id)
 }
 
 func (w *Worker) pollSession(ctx context.Context) {
@@ -182,11 +201,6 @@ func (w *Worker) pollPlayers(ctx context.Context) {
 			w.playerTicker.Stop()
 			return
 		case <-w.playerTicker.C:
-			// Skip player checks for 5 seconds after Worker startup
-			if time.Since(w.startTime) < 5*time.Second {
-				w.l.Debug("skipping-player-poll-post-startup")
-				continue
-			}
 			if len(w.alliesFences) == 0 && len(w.axisFences) == 0 {
 				continue
 			}
@@ -199,7 +213,7 @@ func (w *Worker) pollPlayers(ctx context.Context) {
 				for _, player := range players.Players {
 					go w.checkPlayer(ctx, player)
 				}
-				w.firstCoord.Range(func(id string, p *firstCoordData) bool {
+				w.firstCoord.Range(func(id string, p *api.WorldPosition) bool {
 					for _, player := range players.Players {
 						if player.Id == id {
 							return true
@@ -226,23 +240,17 @@ func (w *Worker) checkPlayer(ctx context.Context, p api.GetPlayerResponse) {
 	}
 
 	if !p.Position.IsSpawned() {
-		w.l.Debug("player-not-spawned", "player_id", p.Id, "player_name", p.Name)
-		w.firstCoord.Store(p.Id, &firstCoordData{Position: nil, StoredAt: time.Now()})
+		w.firstCoord.Store(p.Id, nil)
 		return
 	}
 
 	if fp, ok := w.firstCoord.Load(p.Id); !ok {
-		w.l.Debug("storing-first-coord", "player_id", p.Id, "player_name", p.Name, "position", fmt.Sprintf("%v", p.Position))
-		w.firstCoord.Store(p.Id, &firstCoordData{Position: &p.Position, StoredAt: time.Now()})
+		w.firstCoord.Store(p.Id, &p.Position)
 		return
-	} else if fp.Position != nil && (time.Since(fp.StoredAt) < 2*time.Second || p.Position.Equal(*fp.Position)) {
-		w.l.Debug("skipping-first-coord", "player_id", p.Id, "player_name", p.Name, "position", fmt.Sprintf("%v", p.Position), "stored_at", fp.StoredAt, "duration", time.Since(fp.StoredAt))
+	} else if fp != nil && p.Position.Equal(*fp) {
 		return
 	} else {
-		if fp.Position != nil {
-			w.l.Debug("clearing-first-coord", "player_id", p.Id, "player_name", p.Name, "new_position", fmt.Sprintf("%v", p.Position), "old_position", fmt.Sprintf("%v", *fp.Position))
-		}
-		w.firstCoord.Store(p.Id, &firstCoordData{Position: nil, StoredAt: time.Now()})
+		w.firstCoord.Store(p.Id, nil)
 	}
 
 	var fences []data.Fence
