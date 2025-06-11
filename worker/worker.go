@@ -26,7 +26,7 @@ type worker struct {
 
 	current        *api.GetSessionResponse
 	outsidePlayers sync.Map[string, outsidePlayer]
-	firstCoord     sync.Map[string, *api.WorldPosition]
+	trackedPlayers sync.Map[string, struct{}]
 }
 
 type outsidePlayer struct {
@@ -62,7 +62,7 @@ func NewWorker(l *slog.Logger, pool *rconv2.ConnectionPool, c data.Server) *work
 		playerTicker:   time.NewTicker(500 * time.Millisecond),
 		punishTicker:   time.NewTicker(time.Second),
 		outsidePlayers: sync.Map[string, outsidePlayer]{},
-		firstCoord:     sync.Map[string, *api.WorldPosition]{},
+		trackedPlayers: sync.Map[string, struct{}]{},
 	}
 }
 
@@ -154,13 +154,14 @@ func (w *worker) pollPlayers(ctx context.Context) {
 				for _, player := range players.Players {
 					go w.checkPlayer(ctx, player)
 				}
-				w.firstCoord.Range(func(id string, p *api.WorldPosition) bool {
+				w.trackedPlayers.Range(func(id string, _ struct{}) bool {
 					for _, player := range players.Players {
 						if player.Id == id {
 							return true
 						}
 					}
-					w.firstCoord.Delete(id)
+					w.trackedPlayers.Delete(id)
+					w.outsidePlayers.Delete(id)
 					return true
 				})
 				return nil
@@ -174,22 +175,7 @@ func (w *worker) pollPlayers(ctx context.Context) {
 
 func (w *worker) checkPlayer(ctx context.Context, p api.GetPlayerResponse) {
 	if !p.Position.IsSpawned() {
-		w.firstCoord.Store(p.Id, nil)
 		return
-	}
-
-	// If this is the first time we've seen this player, or if it is still the same position (spawn screen e.g.)
-	// ignore them. The game engine returns the position of a random HQ for players first joining the server, which
-	// might trigger an out-of-fence warning when we do not ignore that here.
-	if fp, ok := w.firstCoord.Load(p.Id); !ok {
-		w.firstCoord.Store(p.Id, &p.Position)
-		return
-	} else if fp != nil && p.Position.Equal(*fp) {
-		return
-	} else {
-		// the player moved (e.g., spawned somewhere), makes sure we start tracking
-		// the position of this player and evaluate them against fences.
-		w.firstCoord.Store(p.Id, nil)
 	}
 
 	var fences []data.Fence
@@ -203,12 +189,24 @@ func (w *worker) checkPlayer(ctx context.Context, p api.GetPlayerResponse) {
 	}
 
 	g := p.Position.Grid(w.current)
+	insideFence := false
 	for _, f := range fences {
 		if f.Includes(g) {
-			w.outsidePlayers.Delete(p.Id)
-			return
+			insideFence = true
+			break
 		}
 	}
+
+	if insideFence {
+		w.trackedPlayers.Store(p.Id, struct{}{})
+		w.outsidePlayers.Delete(p.Id)
+		return
+	}
+
+	if _, ok := w.trackedPlayers.Load(p.Id); !ok {
+		return
+	}
+
 	if o, ok := w.outsidePlayers.Load(p.Id); ok {
 		o.LastGrid = g
 		w.outsidePlayers.Store(p.Id, o)
