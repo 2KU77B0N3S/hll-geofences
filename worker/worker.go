@@ -9,30 +9,33 @@ import (
 	"github.com/floriansw/hll-geofences/sync"
 	"log/slog"
 	"slices"
+	"sync"
 	"time"
 )
 
 type worker struct {
-	pool               *rconv2.ConnectionPool
-	l                  *slog.Logger
-	c                  data.Server
-	axisFences         []data.Fence
-	alliesFences       []data.Fence
-	punishAfterSeconds time.Duration
+	pool			*rconv2.ConnectionPool
+	l			*slog.Logger
+	c			data.Server
+	axisFences		[]data.Fence
+	alliesFences		[]data.Fence
+	punishAfterSeconds	time.Duration
 
-	sessionTicker *time.Ticker
-	playerTicker  *time.Ticker
-	punishTicker  *time.Ticker
+	sessionTicker		*time.Ticker
+	playerTicker		*time.Ticker
+	punishTicker		*time.Ticker
 
-	current        *api.GetSessionResponse
-	outsidePlayers sync.Map[string, outsidePlayer]
-	trackedPlayers sync.Map[string, struct{}]
+	current			*api.GetSessionResponse
+	outsidePlayers		[]outsidePlayer
+	outsidePlayersMu	sync.RWMutex
+	trackedPlayers		[]string
+	trackedPlayersMu	sync.RWMutex
 }
 
 type outsidePlayer struct {
-	Name         string
-	LastGrid     api.Grid
-	FirstOutside time.Time
+	Name		string
+	LastGrid	api.Grid
+	FirstOutside	time.Time
 }
 
 var alliedTeams = []api.PlayerTeam{
@@ -53,16 +56,14 @@ func NewWorker(l *slog.Logger, pool *rconv2.ConnectionPool, c data.Server) *work
 		punishAfterSeconds = *c.PunishAfterSeconds
 	}
 	return &worker{
-		l:                  l,
-		pool:               pool,
-		punishAfterSeconds: time.Duration(punishAfterSeconds) * time.Second,
-		c:                  c,
+		l:			l,
+		pool:			pool,
+		punishAfterSeconds:	time.Duration(punishAfterSeconds) * time.Second,
+		c:			c,
 
-		sessionTicker:  time.NewTicker(1 * time.Second),
-		playerTicker:   time.NewTicker(500 * time.Millisecond),
-		punishTicker:   time.NewTicker(time.Second),
-		outsidePlayers: sync.Map[string, outsidePlayer]{},
-		trackedPlayers: sync.Map[string, struct{}]{},
+		sessionTicker:		time.NewTicker(1 * time.Second),
+		playerTicker:		time.NewTicker(500 * time.Millisecond),
+		punishTicker:		time.NewTicker(time.Second),
 	}
 }
 
@@ -97,12 +98,13 @@ func (w *worker) punishPlayers(ctx context.Context) {
 			w.punishTicker.Stop()
 			return
 		case <-w.punishTicker.C:
-			w.outsidePlayers.Range(func(id string, o outsidePlayer) bool {
+			w.outsidePlayersMu.RLock()
+			for _, o := range w.outsidePlayers {
 				if time.Since(o.FirstOutside) > w.punishAfterSeconds && time.Since(o.FirstOutside) < w.punishAfterSeconds+5*time.Second {
-					go w.punishPlayer(ctx, id, o)
+					go w.punishPlayer(ctx, o.Name, o)
 				}
-				return true
-			})
+			}
+			w.outsidePlayersMu.RUnlock()
 		}
 	}
 }
@@ -118,7 +120,9 @@ func (w *worker) punishPlayer(ctx context.Context, id string, o outsidePlayer) {
 	w.l.Info("punish-player", "player", o.Name, "grid", o.LastGrid.String())
 
 	time.Sleep(5 * time.Second)
-	w.outsidePlayers.Delete(id)
+	w.outsidePlayersMu.Lock()
+	w.outsidePlayers = removePlayer(w.outsidePlayers, id)
+	w.outsidePlayersMu.Unlock()
 }
 
 func (w *worker) pollSession(ctx context.Context) {
@@ -154,16 +158,32 @@ func (w *worker) pollPlayers(ctx context.Context) {
 				for _, player := range players.Players {
 					go w.checkPlayer(ctx, player)
 				}
-				w.trackedPlayers.Range(func(id string, _ struct{}) bool {
+				w.trackedPlayersMu.Lock()
+				var newTracked []string
+				for _, id := range w.trackedPlayers {
 					for _, player := range players.Players {
 						if player.Id == id {
-							return true
+							newTracked = append(newTracked, id)
+							break
 						}
 					}
-					w.trackedPlayers.Delete(id)
-					w.outsidePlayers.Delete(id)
-					return true
-				})
+				}
+				w.trackedPlayers = newTracked
+				w.trackedPlayersMu.Unlock()
+
+				w.outsidePlayersMu.Lock()
+				var newOutside []outsidePlayer
+				for _, o := range w.outsidePlayers {
+					for _, player := range players.Players {
+						if player.Id == o.Name {
+							newOutside = append(newOutside, o)
+							break
+						}
+					}
+				}
+				w.outsidePlayers = newOutside
+				w.outsidePlayersMu.Unlock()
+
 				return nil
 			})
 			if err != nil {
@@ -198,22 +218,44 @@ func (w *worker) checkPlayer(ctx context.Context, p api.GetPlayerResponse) {
 	}
 
 	if insideFence {
-		w.trackedPlayers.Store(p.Id, struct{}{})
-		w.outsidePlayers.Delete(p.Id)
+		w.trackedPlayersMu.Lock()
+		if !containsPlayer(w.trackedPlayers, p.Id) {
+			w.trackedPlayers = append(w.trackedPlayers, p.Id)
+		}
+		w.trackedPlayersMu.Unlock()
+		w.outsidePlayersMu.Lock()
+		w.outsidePlayers = removePlayer(w.outsidePlayers, p.Id)
+		w.outsidePlayersMu.Unlock()
 		return
 	}
 
-	if _, ok := w.trackedPlayers.Load(p.Id); !ok {
+	w.trackedPlayersMu.RLock()
+	hasPlayer := containsPlayer(w.trackedPlayers, p.Id)
+	w.trackedPlayersMu.RUnlock()
+	if !hasPlayer {
 		return
 	}
 
-	if o, ok := w.outsidePlayers.Load(p.Id); ok {
+	w.outsidePlayersMu.RLock()
+	o, found := findOutsidePlayer(w.outsidePlayers, p.Id)
+	w.outsidePlayersMu.RUnlock()
+	if found {
 		o.LastGrid = g
-		w.outsidePlayers.Store(p.Id, o)
+		w.outsidePlayersMu.Lock()
+		for i, player := range w.outsidePlayers {
+			if player.Name == p.Id {
+				w.outsidePlayers[i] = o
+				break
+			}
+		}
+		w.outsidePlayersMu.Unlock()
 		return
 	}
 
-	w.outsidePlayers.Store(p.Id, outsidePlayer{FirstOutside: time.Now(), Name: p.Name, LastGrid: g})
+	newOutside := outsidePlayer{FirstOutside: time.Now(), Name: p.Name, LastGrid: g}
+	w.outsidePlayersMu.Lock()
+	w.outsidePlayers = append(w.outsidePlayers, newOutside)
+	w.outsidePlayersMu.Unlock()
 	w.l.Info("player-outside-fence", "player", p.Name, "grid", g)
 	err := w.pool.WithConnection(ctx, func(c *rconv2.Connection) error {
 		return c.MessagePlayer(ctx, p.Name, fmt.Sprintf(w.c.WarningMessage(), w.punishAfterSeconds.String()))
@@ -230,4 +272,33 @@ func (w *worker) applicableFences(f []data.Fence) (v []data.Fence) {
 		}
 	}
 	return
+}
+
+// Helper functions for slice operations
+func containsPlayer(players []string, id string) bool {
+	for _, p := range players {
+		if p == id {
+			return true
+		}
+	}
+	return false
+}
+
+func removePlayer(players []outsidePlayer, id string) []outsidePlayer {
+	var result []outsidePlayer
+	for _, p := range players {
+		if p.Name != id {
+			result = append(result, p)
+		}
+	}
+	return result
+}
+
+func findOutsidePlayer(players []outsidePlayer, id string) (outsidePlayer, bool) {
+	for _, p := range players {
+		if p.Name == id {
+			return p, true
+		}
+	}
+	return outsidePlayer{}, false
 }
