@@ -3,7 +3,7 @@ module github.com/floriansw/hll-geofences
 go 1.24.1
 
 require (
-	github.com/floriansw/go-hll-rcon v0.0.0-20250501210100-80746ddffb63
+	github.com/floriansw/go-hll-rcon v0.0.0-20250629132557-f7b6f61dd58a
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.36.2
 	gopkg.in/yaml.v3 v3.0.1
