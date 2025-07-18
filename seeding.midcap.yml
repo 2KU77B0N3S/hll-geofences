@@ -18,7 +18,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -37,7 +37,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -56,7 +56,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -75,7 +75,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -94,7 +94,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -113,7 +113,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -132,7 +132,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -151,7 +151,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -170,7 +170,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -189,7 +189,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -208,7 +208,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -227,7 +227,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -246,7 +246,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -265,7 +265,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -284,7 +284,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -303,7 +303,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -322,7 +322,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -341,7 +341,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -360,7 +360,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -379,7 +379,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1242,7 +1242,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1255,7 +1255,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1268,7 +1268,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1281,7 +1281,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1294,7 +1294,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1307,7 +1307,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1320,7 +1320,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1333,7 +1333,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1346,7 +1346,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1359,7 +1359,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1372,7 +1372,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1385,7 +1385,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1398,7 +1398,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1411,7 +1411,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1424,7 +1424,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1437,7 +1437,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1450,7 +1450,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1463,7 +1463,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1476,7 +1476,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1489,7 +1489,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1502,7 +1502,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1515,7 +1515,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1528,7 +1528,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1541,7 +1541,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1554,7 +1554,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1567,7 +1567,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1580,7 +1580,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1593,7 +1593,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1606,7 +1606,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1619,7 +1619,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1632,7 +1632,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1645,7 +1645,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1658,7 +1658,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1671,7 +1671,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1684,7 +1684,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1697,7 +1697,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1710,7 +1710,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1723,7 +1723,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1736,7 +1736,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1749,7 +1749,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1762,7 +1762,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -1775,7 +1775,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3013,7 +3013,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3032,7 +3032,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3051,7 +3051,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3070,7 +3070,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3089,7 +3089,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3108,7 +3108,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3127,7 +3127,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3146,7 +3146,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3165,7 +3165,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3184,7 +3184,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3203,7 +3203,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3222,7 +3222,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3241,7 +3241,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3260,7 +3260,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3279,7 +3279,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3298,7 +3298,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3317,7 +3317,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3336,7 +3336,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3355,7 +3355,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3374,7 +3374,7 @@ Servers:
                     - TOBRUK
                     - UTAH BEACH
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -3564,12 +3564,6 @@ Servers:
                     - DRIEL
                     - FOY
                     - REMAGEN
-                    - EL ALAMEIN
-                    - OMAHA BEACH
-                    - SAINTE-MÈRE-ÉGLISE
-                    - STALINGRAD
-                    - TOBRUK
-                    - UTAH BEACH
             LessThan:
                 player_count: 50
         - X: I
@@ -4237,7 +4231,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4250,7 +4244,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4263,7 +4257,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4276,7 +4270,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4289,7 +4283,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4302,7 +4296,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4315,7 +4309,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4328,7 +4322,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4341,7 +4335,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4354,7 +4348,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4367,7 +4361,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4380,7 +4374,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4393,7 +4387,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4406,7 +4400,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4419,7 +4413,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4432,7 +4426,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4445,7 +4439,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4458,7 +4452,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4471,7 +4465,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4484,7 +4478,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4497,7 +4491,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4510,7 +4504,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4523,7 +4517,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4536,7 +4530,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4549,7 +4543,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4562,7 +4556,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4575,7 +4569,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4588,7 +4582,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4601,7 +4595,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4614,7 +4608,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4627,7 +4621,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4640,7 +4634,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4653,7 +4647,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4666,7 +4660,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4679,7 +4673,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4692,7 +4686,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4705,7 +4699,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4718,7 +4712,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4731,7 +4725,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4744,7 +4738,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4757,7 +4751,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
@@ -4770,7 +4764,7 @@ Servers:
                     - Warfare
                 map_name:
                     - CARENTAN
-                    - HILL 500
+                    - HILL 400
                     - HÜRTGEN FOREST
                     - MORTAIN
             LessThan:
