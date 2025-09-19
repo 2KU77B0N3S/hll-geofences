@@ -214,4 +214,3 @@ Logs are written to `restart-containers.log` in the root directory for troublesh
 ## Contributing
 
 Contributions are welcome! Submit issues, feature requests, or pull requests via the [GitHub repository](https://github.com/2KU77B0N3S/hll-geofences).
-If you want to support the project, buy a Gameserver at Qonzer [HERE](https://qonzer.com/aff.php?aff=55)
